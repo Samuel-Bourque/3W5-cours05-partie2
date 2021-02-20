@@ -1,9 +1,18 @@
-orbs:
-  node: circleci/node@4.1.0
-
 version: 2.1
 
+jobs:
+  checkoutAndTest:
+    docker:
+      - image: cimg/node:15.8.0
+    steps:
+      - run: git clone https://github.com/Samuel-Bourque/3W5_Frontend.git
+      - run: git clone https://github.com/Samuel-Bourque/3W5_Backend.git
+      - run: cd 3W5_Frontend && npm install
+      - run: cd 3W5_Frontend && npm run build
+      - run: cp -r ./3W5_Frontend/build ./3W5_Backend
+      - run: cd 3W5_Backend && ls
+
 workflows:
-  app-tests:
+  build:
     jobs:
-      - node/test
+      - checkoutAndTest
