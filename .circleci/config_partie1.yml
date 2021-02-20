@@ -1,0 +1,75 @@
+version: 2.1
+
+jobs:
+  checkout_and_unit_test:
+    docker:
+      - image: cimg/node:15.8.0
+    steps:
+      - checkout
+      - run: node --version
+      - run: npm --version
+      - run: npm install
+      - run: npm run test
+  deploy_backend:
+    machine: true
+    steps:
+      - run: echo "Deploy backend"
+  integration_tests_backend:
+    machine: true
+    steps:
+      - run: echo "Integration tests backend"
+  deploy_staging:
+    machine: true
+    steps:
+      - run: echo "Deploy staging"
+  acceptance_tests_1:
+    machine: true
+    steps:
+      - run: echo "tests 1 have passed!"
+  acceptance_tests_2:
+    machine: true
+    steps:
+      - run: echo "tests 2 have passed!"
+  acceptance_tests_3:
+    machine: true
+    steps:
+      - run: echo "tests 3 have passed!"
+  acceptance_tests_4:
+    machine: true
+    steps:
+      - run: echo "tests 4 have passed!"
+  deploy_production:
+    machine: true
+    steps:
+      - run: echo "deploy production"
+workflows:
+  build:
+    jobs:
+      - checkout_and_unit_test
+      - deploy_backend:
+          requires:
+            - checkout_and_unit_test
+      - integration_tests_backend:
+          requires:
+            - deploy_backend
+      - deploy_staging:
+          requires:
+            - integration_tests_backend
+      - acceptance_tests_1:
+          requires:
+            - deploy_staging
+      - acceptance_tests_2:
+          requires:
+            - deploy_staging
+      - acceptance_tests_3:
+          requires:
+            - deploy_staging
+      - acceptance_tests_4:
+          requires:
+            - deploy_staging
+      - deploy_production:
+          requires:
+            - acceptance_tests_1
+            - acceptance_tests_2
+            - acceptance_tests_3
+            - acceptance_tests_4
